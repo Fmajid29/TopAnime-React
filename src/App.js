@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import Anime from "./components/Anime";
 
 function App() {
+  const [anime, setAnime] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.jikan.moe/v4/top/anime")
+      .then((res) => res.json())
+      .then((data) => setAnime(data.data));
+  }, []);
+
+  const anim = anime.map((anime) => {
+    console.log(anime);
+
+    let animeName = anime.title_english || anime.title;
+    let animeImage = anime.images.jpg.image_url;
+    let rating = anime.score;
+    console.log(animeName);
+    console.log(animeImage);
+    return <Anime AnimeTitle={animeName} Image={animeImage} rating={rating} />;
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="main">
+      <h1>Top 20 Anime</h1>
+      <div className="App">{anim}</div>
     </div>
   );
 }
